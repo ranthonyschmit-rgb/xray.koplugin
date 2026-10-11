@@ -155,14 +155,12 @@ local specs = {
     "spec/xray_terms_spec.lua",
     "spec/xray_seriesmanager_spec.lua",
     "spec/xray_book_picker_spec.lua",
-    "spec/xray_units_spec.lua",
     "spec/xray_crypto_spec.lua",
     "spec/xray_websetup_spec.lua",
     "spec/xray_imagemanager_spec.lua",
     "spec/xray_imageviewer_spec.lua",
     "spec/xray_nontouch_spec.lua",
     "spec/xray_background_fetch_spec.lua",
-    "spec/xray_book_type_spec.lua",
     "spec/xray_low_memory_guard_spec.lua"
 }
 

@@ -24,7 +24,6 @@ end
 
 local _ = gettext
 local plugin_path = ((...) or ""):match("(.-)[^%.]+$") or ""
-local xray_units = require(plugin_path .. "xray_units")
 local XRaySettingsCard = require(plugin_path .. "xray_settings_card")
 local utils = require(plugin_path .. "xray_utils")
 
@@ -478,7 +477,7 @@ function XRayBottomPopup:_buildContent()
     end
 
     -- B. Linked Entries button
-    if #related > 0 and not e.is_conversion then
+    if #related > 0 then
         table.insert(raw_button_defs, {
             label = get_loc_t("linked_entries", "Linked Entries"),
             cb = function()
@@ -491,7 +490,7 @@ function XRayBottomPopup:_buildContent()
     end
 
     -- C. Find Mentions button
-    if mentions_enabled and not e.is_timeline and not e.is_conversion then
+    if mentions_enabled and not e.is_timeline then
         table.insert(raw_button_defs, {
             label = get_loc_t("find_mentions", "Find Mentions"),
             cb = function()
@@ -5992,28 +5991,6 @@ function M:showReasoningEffortSettings()
     })
 end
 
-function M:showUnitConversionDirectionSettings()
-    XRaySettingsCard.show(self, {
-        title = self.loc:t("unit_conv_direction") or "Conversion Direction",
-        description = self.loc:t("unit_conv_direction_desc") or "Select target direction for unit conversions:",
-        options = {
-            { text = self.loc:t("unit_conv_direction_auto") or "Auto (Follow Device)", value = "auto" },
-            { text = self.loc:t("unit_conv_direction_metric") or "To Metric", value = "to_metric" },
-            { text = self.loc:t("unit_conv_direction_imperial") or "To Imperial", value = "to_imperial" },
-        },
-        get_current_func = function()
-            return self.ai_helper.settings.unit_conversion_direction or "auto"
-        end,
-        save_func = function(val)
-            self.ai_helper:saveSettings({ unit_conversion_direction = val })
-        end,
-        on_close = function()
-            if self.scanBookForUnits then self:scanBookForUnits() end
-        end,
-        about_text = self.loc:t("unit_conv_direction_about") or "Unit conversion direction determines how measurements in books (e.g. lengths, weight, temperatures) are translated:\n\n• [B]Auto (Follow Device):[/B] Automatically converts based on the 'Dimension units' system setting of your device.\n• [B]To Metric:[/B] Always converts Imperial units (e.g. miles, Fahrenheit) to Metric equivalents (e.g. kilometers, Celsius).\n• [B]To Imperial:[/B] Always converts Metric units to Imperial equivalents.",
-    })
-end
-
 function M:showBetaChannelSettings()
     local enabled_text = self.loc:t("beta_enabled") or "Beta Channel Enabled"
     local disabled_text = self.loc:t("beta_disabled") or "Stable Channel (Recommended)"
@@ -6160,14 +6137,6 @@ function M:checkSeriesContext()
     self:log("XRayPlugin: Series: checkSeriesContext starting")
     if self.destroyed then
         self:log("XRayPlugin: Series: checkSeriesContext: plugin destroyed, skipping")
-        return
-    end
-    if self._unit_scan_in_progress then
-        self:log("XRayPlugin: Series: checkSeriesContext: unit scan in progress, deferring series check")
-        UIManager:scheduleIn(5, function()
-            if self.destroyed or not self.ui or not self.ui.document then return end
-            self:checkSeriesContext()
-        end)
         return
     end
     if not self.ui or not self.ui.document then
@@ -6411,37 +6380,6 @@ function M:resolveDescriptionForPage(entity, current_page)
     end
     
     return entity[desc_key] or "---"
-end
-
-function M:handleUnitConversionLookup(text)
-    local settings = self.ai_helper and self.ai_helper.settings or {}
-    local direction = settings.unit_conversion_direction or "auto"
-    if direction == "auto" then
-        direction = xray_units.getDefaultDirection()
-    end
-    local enabled_cats = {
-        length = settings.unit_cat_length ~= false,
-        weight = settings.unit_cat_weight ~= false,
-        temp = settings.unit_cat_temp ~= false,
-        volume = settings.unit_cat_volume ~= false,
-        speed = settings.unit_cat_speed ~= false,
-        area = settings.unit_cat_area ~= false,
-    }
-    local lang = self.loc and self.loc:getLanguage() or "en"
-    local matches = xray_units.detectMeasurements(text, direction, enabled_cats, lang)
-    if matches and #matches > 0 then
-        local match = matches[1]
-        local entity = {
-            name = match.original,
-            description = match.original .. " = " .. match.converted,
-            category = "Unit Conversion",
-            role = match.category:upper(),
-            is_conversion = true
-        }
-        showBottomPopup(self, entity)
-        return true
-    end
-    return false
 end
 
 function M:getCurrentSeriesInfo()

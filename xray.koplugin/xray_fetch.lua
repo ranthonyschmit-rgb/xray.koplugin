@@ -1322,14 +1322,6 @@ function M:runPostFetchDuplicateCheck(title, author, reading_percent, is_silent)
         self:log("XRayPlugin: Skipping duplicate check because the reader document is unavailable")
         return
     end
-    if self._unit_scan_in_progress then
-        self:log("XRayPlugin: Deferring duplicate check because unit scan is in progress")
-        UIManager:scheduleIn(5, function()
-            if self.destroyed or not self.ui or not self.ui.document then return end
-            self:runPostFetchDuplicateCheck(title, author, reading_percent, is_silent)
-        end)
-        return
-    end
     if not self.ai_helper or not self.ai_helper.hasApiKey or not self.ai_helper:hasApiKey() then return end
     if self.ai_helper.settings and self.ai_helper.settings.auto_dupe_check_enabled == false then return end
 

@@ -10,8 +10,8 @@ local logger      = require("logger")
 -- ---------------------------------------------------------------------------
 -- Configuration
 -- ---------------------------------------------------------------------------
-local GITHUB_OWNER = "ultimatejimmy"
-local GITHUB_REPO  = "koreader-xray-plugin"
+local GITHUB_OWNER = "ranthonyschmit-rgb"
+local GITHUB_REPO  = "xray.koplugin"
 local ASSET_NAME   = "xray.koplugin.zip"
 
 -- Cache validity time in seconds. 0 = disable cache.

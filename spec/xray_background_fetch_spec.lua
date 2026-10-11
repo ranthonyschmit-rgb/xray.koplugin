@@ -133,8 +133,6 @@ describe("X-Ray Background Catch-Up", function()
             cancelActiveAIRequest = function() end,
             closeAllMenus = function() end,
             showWelcomeCard = function() end,
-            showUnitConverterNewFeatureCard = function() end,
-            scanBookForUnits = function() end,
             checkBookLanguageMatch = function() end,
             isNonNarrativeChapter = function(self, title)
                 return false
@@ -237,19 +235,6 @@ describe("X-Ray Background Catch-Up", function()
         advance(5)
         assert.are.equal(1, #requests)
         assert.are.equal(3, plugin.series_checks)
-    end)
-
-    it("reschedules catch-up when unit scan is active", function()
-        skipOfflineFetch("Chapter 4")
-        plugin._unit_scan_in_progress = true
-        reconnect()
-        advance(5)
-        assert.are.equal(0, #requests) -- deferred!
-        assert.is_true(plugin.pending_background_fetch)
-
-        plugin._unit_scan_in_progress = false
-        advance(12)
-        assert.are.equal(1, #requests)
     end)
 
     it("reschedules catch-up when another AI request is active", function()

@@ -1,4 +1,6 @@
-# X-Ray Plugin for KOReader
+# X-Ray Plugin for KOReader (no unit converter)
+
+> This is a fork of [ultimatejimmy/xray.koplugin](https://github.com/ultimatejimmy/xray.koplugin) with the **Unit Converter** feature removed: no measurement scanning, no underlines, no conversion pop-ups, and no unit settings menu. Everything else is unchanged. The built-in updater checks this fork's releases instead of the original's, so updating won't bring the unit converter back.
 
 ![Platform](https://img.shields.io/badge/platform-KOReader-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-yellow.svg)

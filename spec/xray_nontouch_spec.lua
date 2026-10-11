@@ -5,7 +5,6 @@ local xray_theme = require("xray_theme")
 local ImageGallery = require("xray_image_gallery")
 local ImageViewer = require("xray_image_viewer")
 local XRaySettingsCard = require("xray_settings_card")
-local UnitScanner = require("xray_unitscanner")
 local UIManager = require("ui/uimanager")
 
 describe("X-Ray Non-Touch & Keyboard Support", function()
